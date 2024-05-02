@@ -1,9 +1,32 @@
 import streamlit as st
 import datetime
+import pandas as pd
+import plotly.figure_factory as ff
 import requests
 from crewai import Agent, Task, Crew, Process
 from langchain_google_genai import ChatGoogleGenerativeAI
-from dateutil.parser import parse as parse_date
+from gtts import gTTS
+import os
+
+# Weather Icons
+weather_icons = {
+    "Clear": "🌞",
+    "Clouds": "☁️",
+    "Drizzle": "🌦️",
+    "Rain": "🌧️",
+    "Thunderstorm": "⛈️",
+    "Snow": "❄️",
+    "Mist": "🌫️",
+    "Smoke": "🌫️",
+    "Haze": "🌫️",
+    "Dust": "🌫️",
+    "Fog": "🌫️",
+    "Sand": "🌫️",
+    "Ash": "🌫️",
+    "Squall": "🌫️",
+    "Tornado": "🌪️"
+}
+
 
 # Define Google LLM for interacting with Google Calendar
 llm = ChatGoogleGenerativeAI(model="gemini-pro", verbose=True, temperature=0.6, google_api_key="AIzaSyDjITo6JpwACzQKlMCJKuBhHHK8jTQIhBg")
@@ -100,28 +123,56 @@ if task_selection == "Planting Calendar":
                             st.write(f"Temperature: {weather_data['main']['temp']}°C")
                             st.write(f"Humidity: {weather_data['main']['humidity']}%")
                         with cols[1]:
-                            st.write(f"Weather: {weather_data['weather'][0]['description']}")
+                            weather_condition = weather_data['weather'][0]['main']
+                            weather_icon = weather_icons.get(weather_condition, "❓")
+                            st.write(f"Weather: {weather_icon} {weather_data['weather'][0]['description']}")
                             st.write(f"Wind Speed: {weather_data['wind']['speed']} m/s")
+                            
+                            # Text to Speech - Weather Information
+                            tts_text_weather = f"Temperature: {weather_data['main']['temp']} degrees Celsius. Humidity: {weather_data['main']['humidity']} percent. Weather: {weather_icon} {weather_data['weather'][0]['description']}. Wind Speed: {weather_data['wind']['speed']} meters per second."
+                            tts_filename_weather = "weather_info.mp3"
+                            tts_weather = gTTS(tts_text_weather, lang='en')
+                            tts_weather.save(tts_filename_weather)
+                            st.audio(tts_filename_weather, format='audio/mp3')
+                            os.remove(tts_filename_weather)  # Remove the audio file after playing
+
                     else:
                         st.warning(f"Could not retrieve weather information for {location}.")
 
                     # Execute the farming crew for planting calendar
                     with st.spinner("Executing farming tasks..."):
+                        calendar_data = []
                         for task in farming_crew_planting.tasks:
+                            if task.agent == farmer_agent:
+                                continue  # Skip displaying output for the farmer's task
                             st.write(f"Executing task: {task.description}")
                             output = task.execute()
                             st.success("Task completed successfully!")
 
-                            # Display agent response
-                            if task.agent == agronomist_agent:
-                                st.write("Agronomist's Advice:")
-                                st.info(output)  # Display agronomist's response
-                            elif task.agent == planner_agent:
-                                st.write("Farming Calendar:")
-                                st.info(output)  # Display planner's response
+                            # Collect calendar data
+                            if task.agent == planner_agent:
+                                calendar_data.append(output)
+                                
+                            # Text to Speech - Agent Response
+                            tts_text_agent = output
+                            tts_filename_agent = f"agent_response_{task.agent.role.replace(' ', '_')}.mp3"
+                            tts_agent = gTTS(tts_text_agent, lang='en')
+                            tts_agent.save(tts_filename_agent)
+                            st.audio(tts_filename_agent, format='audio/mp3')
+                            os.remove(tts_filename_agent)  # Remove the audio file after playing
+
+                            # Display written output
+                            st.write(output)
+
+                        # Create Gantt Chart
+                        if calendar_data:
+                            gantt_df = pd.DataFrame(calendar_data, columns=["Task", "Start", "Finish"])
+                            fig = ff.create_gantt(gantt_df, colors=['#7a7a7a', '#adadad'], index_col='Task', show_colorbar=False,
+                                                  title='Planting Calendar', showgrid_x=True, showgrid_y=True)
+                            st.plotly_chart(fig)
 
                 except ValueError:
                     st.error("Invalid input. Please enter valid values.")
 
 st.markdown("---")
-st.info("This application was developed by AbutiSpinach to assist farmers with planting calendars and farming advice. For more information or support, please visit our [website]https://sites.google.com/view/abutispinach.")
+st.info("This application was developed by AbutiSpinach to assist farmers with planting calendars and farming advice. For more information or support, please visit our [website](https://sites.google.com/view/abutispinach).")

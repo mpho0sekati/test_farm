@@ -124,4 +124,4 @@ if task_selection == "Planting Calendar":
                     st.error("Invalid input. Please enter valid values.")
 
 st.markdown("---")
-st.info("This application was developed by AbutiSpinach to assist farmers with planting calendars and farming advice. For more information or support, please visit our [website](https://abutispinach.com).")
+st.info("This application was developed by AbutiSpinach to assist farmers with planting calendars and farming advice. For more information or support, please visit our [website]https://sites.google.com/view/abutispinach.")

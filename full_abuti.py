@@ -7,7 +7,6 @@ from crewai import Agent, Task, Crew, Process
 from langchain_google_genai import ChatGoogleGenerativeAI
 from gtts import gTTS
 import os
-
 # Weather Icons
 weather_icons = {
     "Clear": "🌞",

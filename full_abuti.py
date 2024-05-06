@@ -7,6 +7,7 @@ from crewai import Agent, Task, Crew, Process
 from langchain_google_genai import ChatGoogleGenerativeAI
 from gtts import gTTS
 import os
+
 # Weather Icons
 weather_icons = {
     "Clear": "🌞",
@@ -26,8 +27,7 @@ weather_icons = {
     "Tornado": "🌪️"
 }
 
-
-# Define Google LLM for interacting with Google Calendar
+# Define Google LLM for interacting with Google CalendarAIzaSyDjITo6JpwACzQKlMCJKuBhHHK8jTQIhBg
 llm = ChatGoogleGenerativeAI(model="gemini-pro", verbose=True, temperature=0.6, google_api_key="AIzaSyDjITo6JpwACzQKlMCJKuBhHHK8jTQIhBg")
 
 # Define agents
@@ -142,8 +142,6 @@ if task_selection == "Planting Calendar":
                     with st.spinner("Executing farming tasks..."):
                         calendar_data = []
                         for task in farming_crew_planting.tasks:
-                            if task.agent == farmer_agent:
-                                continue  # Skip displaying output for the farmer's task
                             st.write(f"Executing task: {task.description}")
                             output = task.execute()
                             st.success("Task completed successfully!")
@@ -163,15 +161,12 @@ if task_selection == "Planting Calendar":
                             # Display written output
                             st.write(output)
 
-                        # Create Gantt Chart
-                        if calendar_data:
-                            gantt_df = pd.DataFrame(calendar_data, columns=["Task", "Start", "Finish"])
-                            fig = ff.create_gantt(gantt_df, colors=['#7a7a7a', '#adadad'], index_col='Task', show_colorbar=False,
-                                                  title='Planting Calendar', showgrid_x=True, showgrid_y=True)
-                            st.plotly_chart(fig)
+                        
+                       
 
                 except ValueError:
                     st.error("Invalid input. Please enter valid values.")
 
 st.markdown("---")
 st.info("This application was developed by AbutiSpinach to assist farmers with planting calendars and farming advice. For more information or support, please visit our [website](https://sites.google.com/view/abutispinach).")
+

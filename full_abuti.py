@@ -43,7 +43,7 @@ planner_agent = Agent(role='Amazing Planner Agent', goal='Create an optimized pl
                       backstory='Specialist in farm management and agronomy with decades of experience, providing a calendar based on the provided information.',
                       verbose=True, allow_delegation=False, llm=llm)
 
-crop_suggestion_agent = Agent(role='Crop Suggestion Agent', goal='Suggest alternative crops if the entered crop is out of season,
+crop_suggestion_agent = Agent(role='Crop Suggestion Agent', goal='Suggest alternative crops if the entered crop is out of season',
                               backstory='An agent specialized in suggesting alternative crops based on seasonality and profitability in that local area.',
                               verbose=True, allow_delegation=False, llm=llm)
 

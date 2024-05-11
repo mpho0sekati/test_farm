@@ -35,15 +35,15 @@ farmer_agent = Agent(role='Farmer Agent', goal='Gather planting information from
                      backstory='An agent specialized in interacting with farmers to gather planting information.',
                      verbose=True, allow_delegation=False, llm=llm)
 
-agronomist_agent = Agent(role='Agronomist Local Expert', goal='Provide personalized farming advice based on location and crop',
+agronomist_agent = Agent(role='Agronomist Local Expert', goal='Provide personalized farming advice step by step based on location and crop',
                          backstory='An expert specialized in providing personalized farming advice based on location and crop.',
                          verbose=True, allow_delegation=False, llm=llm)
 
-planner_agent = Agent(role='Amazing Planner Agent', goal='Create an optimized planting calendar with budget and best farming practices',
+planner_agent = Agent(role='Amazing Planner Agent', goal='Create an optimized planting calendar with a budget based on the location currency and best farming practices',
                       backstory='Specialist in farm management and agronomy with decades of experience, providing a calendar based on the provided information.',
                       verbose=True, allow_delegation=False, llm=llm)
 
-crop_suggestion_agent = Agent(role='Crop Suggestion Agent', goal='Suggest alternative crops if the entered crop is out of season',
+crop_suggestion_agent = Agent(role='Crop Suggestion Agent', goal='Suggest alternative crops if the entered crop is out of season,
                               backstory='An agent specialized in suggesting alternative crops based on seasonality and profitability in that local area.',
                               verbose=True, allow_delegation=False, llm=llm)
 
